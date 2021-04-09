@@ -1,0 +1,25 @@
+.grade
+{
+    font-weight: 700;
+    float: right;
+    /* color: white */
+}
+.purple
+{
+    padding-left: 10px;
+    color: purple;
+}
+.period-row .comment-column
+{
+    text-align: right;
+}
+
+.gradebook-course.hierarchical-grading-report .comment-column .grade-column
+{
+    text-align: right;
+}
+
+#wrapper, #wrapper *, #wrapper #main-content-wrapper
+{
+    /* background-color: #111; */
+}
