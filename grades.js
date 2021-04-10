@@ -4,9 +4,9 @@ document.querySelector( '#center-top' ).innerHTML +=
 <span>Current Semester: </span><input id = "thecurrentsem" type = "number" value = "${1}" min = "1" max = "3">
 `
 
-document.querySelector("#main-content-wrapper").style.width = "70%"
+document.querySelector("#main-content-wrapper").style.width = "calc( 90% - 200px )"
 
-allCoursesGrades = []
+allCourses = []
 letters = [
     { letter: "A", color: "#11dd00"},
     { letter: "B", color: "#aacc00"},
@@ -18,7 +18,6 @@ letters = [
 
 const getOuterText = el =>
 {
-    console.log( el );
     var child = el.firstChild, texts = [];
     while( child )
     {
@@ -28,17 +27,16 @@ const getOuterText = el =>
     }
     return texts.join("");
 }
-
+var id = 0;
+let courseNum = 0;
 const processCourse = ( element ) =>
 {
     var courseName = element.querySelector( '.sExtlink-processed' ).innerText;
 
-    courseGrades = [];
-
-    (( el ) => {
+    return (( el ) => {
         cats = [];
         var course = {
-            periods:[]
+            periods:[],
         };
 
         el.querySelectorAll( ".period-row").forEach( per => {
@@ -55,13 +53,14 @@ const processCourse = ( element ) =>
         })
 
         var periodNum = 0;
+        var catNum = 0;
         var currentCat = null
         var currentPer = null
         var maxPoints = 0;
         var awardedPoints = 0;
         var firstPer = true;
         var weighted = false;
-        function addCat( cat )
+        function addCat( cat, pNum, catNum )
         {
             if( currentCat != null )
             {
@@ -81,8 +80,11 @@ const processCourse = ( element ) =>
                     maxPoints: maxPoints,
                     awardedPoints: awardedPoints,
                     percentage: percentage,
-                    weightage: weightage
+                    weightage: weightage,
+                    periodNum: pNum,
+                    courseNum: courseNum,
                 });
+                currentCat.setAttribute( "cat-num", catNum - 1 )
                 currentCat.querySelector( ".grade-column .td-content-wrapper" ).innerHTML = `
                 <span class = "awarded-grade" >
                     <span class = "numeric-grade-value">${awardedPoints}</span>
@@ -102,16 +104,17 @@ const processCourse = ( element ) =>
             maxPoints = 0;
             awardedPoints = 0;
             currentCat = cat;
+
         }
 
-        id = 0;
         el.querySelectorAll( ".period-row, .category-row, .item-row" ).forEach( el =>
         {
+            course.periods[periodNum].grades = []
             el.setAttribute( "schoology-pro-id", id++ )
-            console.log( el );
             if( el.classList.contains( 'category-row' ) )
             {
-                addCat( el );
+                addCat( el, periodNum, catNum );
+                catNum++;
             }
             else if( el.classList.contains( 'item-row' ) )
             {
@@ -128,7 +131,7 @@ const processCourse = ( element ) =>
 
                 if( !firstPer )
                 {
-                    addCat( el )
+                    addCat( el, periodNum, catNum )
                     course.periods[periodNum].categories = cats.slice(0);
                     if( weighted )
                     {
@@ -138,15 +141,22 @@ const processCourse = ( element ) =>
                         var weightedGrade = 0;
                         for( var c = 0; c < cats.length; c++ )
                         {
-                            let container = document.createElement( "div");
-                            container.className = "container";
-                            container.innerHTML = `<span class = "name">${cats[c].name}</span>`
-                            let input = document.createElement( "input" );
-                            input.value = cats[c].weightage;
-                            
-                            
                             if( cats[c].weightage != -1 )
                             {
+                                let container = document.createElement( "div");
+                                container.className = "container";
+                                container.innerHTML = `<span class = "name">${cats[c].name}</span>`
+                                let input = document.createElement( "input" );
+                                input.className = "changeweight"
+                                input.type = 'number'
+                                input.setAttribute( "value", `${cats[c].weightage}` )
+                                input.setAttribute("schoology-pro-ref", cats[c].el.getAttribute( 'schoology-pro-id' ))
+                                input.setAttribute("period-num", periodNum );
+                                input.setAttribute("course-num", courseNum );
+                                container.appendChild( input );
+                                container.innerHTML += "%";
+
+                                weightsGUI.appendChild( container );
                                 let dec = cats[c].weightage/100;
                                 if( cats[c].maxPoints > 0 )
                                 {
@@ -155,13 +165,26 @@ const processCourse = ( element ) =>
                                 }
                             }
                         }
-                        weightsGUI.innerHTML += `
-                            <div class = "container">
-                                <button class = "soorajbutton" style = "background-color: #fff">Add Category</button>
-                            <div>`
+
+                        weightsGUI.innerHTML = "<div class = 'weights'>" + weightsGUI.innerHTML + "</div>"
+
+                        let container = document.createElement( "div");
+                        container.className = "container";
+                        let button = document.createElement( "button" );
+                        button.className = "soorajbutton addcategory";
+                        button.style.backgroundColor = "#fff";
+                        button.innerHTML = "Add Category";
+                        button.setAttribute("period-num", periodNum );
+                        button.setAttribute("course-num", courseNum );
+                        container.appendChild( button )
+                        weightsGUI.appendChild( container )
+
+                        // input.setAttribute("schoology-pro-ref", cats[c].el.getAttribute( 'schoology-pro-id' ))
+                        // input.setAttribute("period-num", periodNum );
+                        // input.setAttribute("course-num", courseNum );
 
                         weightsGUI.innerHTML = "<div class = 'weightsgui'>" + weightsGUI.innerHTML + "</div>"
-                        currentPer.querySelector('.comment-column').appendChild( weightsGUI )
+                        currentPer.querySelector('.comment-column').appendChild( weightsGUI );
 
                         var perGrade = (() =>
                         {
@@ -171,7 +194,7 @@ const processCourse = ( element ) =>
                         })()
 
                         course.periods[periodNum].element.querySelector( ".comment-column .td-content-wrapper" ).innerHTML = perGrade + "%"
-                        courseGrades.push( perGrade );
+                        course.periods[periodNum].grade =  perGrade 
                         course.periods[periodNum].element.querySelector(".title-column .td-content-wrapper").innerHTML += `
                         <span class = 'purple'>WEIGHTED</span>
                         `
@@ -192,21 +215,22 @@ const processCourse = ( element ) =>
                             return 0;
                         })()
                         course.periods[periodNum].element.querySelector( ".comment-column .td-content-wrapper" ).innerHTML = perGrade + "%"
-                        courseGrades.push( perGrade );
+                        course.periods[periodNum].grade = perGrade
                     }
                     currentCat = null;
                     cats = []
+                    catNum = 0;
                     periodNum++;
                 }
                 currentPer = el;
                 firstPer = false;
             }
         })
-        addCat( el )
+        addCat( el, periodNum, catNum )
         course.periods[periodNum].categories = cats
+        course.periods[periodNum].addedCats = 0;
+        return course;
     })( element.querySelector( '.gradebook-course-grades table tbody' ) )
-    
-    return { list: courseGrades, grade: getSemesterGrade( courseGrades, document.querySelector( "#thecurrentsem") ) };
 
 }
 
@@ -230,7 +254,15 @@ function setSemesterGrade( val )
     var index = 0;
     document.querySelectorAll( ".gradebook-course" ).forEach( ( element ) =>
     {
-        var courseGrade = getSemesterGrade( allCoursesGrades[index], parseInt(val) );
+
+        var len = allCourses[index].periods.length;
+        grades = [];
+        for( var i = 0; i < len; i++ ){
+            
+            grades.push( allCourses[index].periods[i].grade )
+        }
+
+        var courseGrade = getSemesterGrade( grades, parseInt(val) );
 
         var letterAndNum = "";
         var idx = 4;
@@ -280,12 +312,137 @@ var courseslist = document.querySelectorAll( ".gradebook-course" );
 courseslist.forEach(
     ( element ) => {
         var course = processCourse( element )
-        allCoursesGrades.push( course.list );
-
+        let grades = []
+        for( var c = 0; c < course.periods.length; c++ )
+        {
+            grades.push( course.periods[c].grade );
+        }
+        allCourses.push( course );
+        courseNum++;
     }
 )
+courseNum = 0;
 
 chrome.storage.sync.get(['cursem'], r => { 
     setSemesterGrade( r.cursem );
     document.querySelector( "#thecurrentsem" ).value = r.cursem 
+})
+
+
+const updateWeights = () => {
+
+    document.querySelectorAll( ".changeweight").forEach( el => {
+        el.onchange = function()
+        {
+            let cat = document.querySelector( `[schoology-pro-id="${el.getAttribute('schoology-pro-ref')}"]`)
+            cat.querySelector( ".percentage-contrib").innerHTML = `(${el.value}%)`
+            var period = allCourses[el.getAttribute('course-num')].periods[el.getAttribute('period-num')];
+            let cats = period.categories;
+            if( !el.getAttribute('schoology-pro-ref').includes("n") )
+                cats[cat.getAttribute('cat-num') + period.addedCats ].weightage = el.value;
+            cats[cat.getAttribute('cat-num') ].weightage = el.value;
+            
+
+            let totalWeight = 0;
+            let weightedGrade = 0;
+
+            for( c = 0; c < cats.length; c++ )
+                if( cats[c].weightage != -1 )
+                {
+                    let dec = cats[c].weightage/100;
+                    if( cats[c].maxPoints > 0 )
+                    {
+                        totalWeight += dec;
+                        weightedGrade += cats[c].percentage * dec;
+                    }
+                }
+            var perGrade = (() =>
+            {
+                if( totalWeight > 0 )
+                    return parseInt( ( weightedGrade / totalWeight ) * 10000 ) / 100
+                return 0;
+            })()
+            period.element.querySelector( ".comment-column .td-content-wrapper" ).innerHTML = perGrade + "%"
+            period.grade = perGrade 
+        }
+    })
+}
+updateWeights();
+ 
+let newId = 0;
+document.querySelectorAll( ".addcategory").forEach( el => {
+    el.onclick = function()
+    {
+        let courseNum = el.getAttribute('course-num');
+        let periodNum = el.getAttribute('period-num');
+        var period = allCourses[courseNum].periods[periodNum];
+        period.addedCats++;
+
+        period.element.insertAdjacentHTML( "afterend", `
+        <tr tabindex="0"  class="report-row category-row has-children" schoology-pro-id="n${newId}" cat-num="${0}">
+            <th scope="row" class="title-column clickable" tabindex="0">
+                <div class="reportSpacer-2">
+                    <div class="td-content-wrapper">
+                        <img src="/sites/all/themes/schoology_theme/images/expandable-sprite.png" class="expandable-icon-grading-report" alt="">
+                        <span class="title">New Category</span> 
+                        <span class="percentage-contrib">(0%)</span>
+                    </div>
+                </div>
+            </th>
+            <td class="grade-column">
+                <div class="td-content-wrapper">
+                    <span class="awarded-grade">
+                        <span class="numeric-grade-value">0</span>
+                    </span>
+                    <span class="max-grade"> / 0</span>
+                </div>
+            </td>
+            <td class="grade-column">
+                <div class="td-content-wrapper">
+                    <span class="awarded-grade" style="float:right">
+                        <span class="numeric-grade-value">0%</span>
+                    </span>
+                </div>
+            </td>
+        </tr>`)
+
+        let cats = period.categories;
+        
+        let cat = document.querySelector( `[schoology-pro-id="n${newId}"]`)
+
+
+        var weightage = -1;
+        if( cat.querySelector('.title-column .percentage-contrib') != null )
+        {
+            weightage = parseFloat( cat.querySelector('.title-column .percentage-contrib').innerText.slice( 1, -2 ) );
+            weighted = true;
+        }
+
+        cats.push({
+            name: getOuterText( cat.querySelector( '.title-column .title') ),
+            el: cat,
+            maxPoints: 0,
+            awardedPoints: 0,
+            percentage: 0,
+            weightage: 0,
+            periodNum: periodNum,
+            courseNum: courseNum,
+        });
+
+        let container = document.createElement( "div");
+        container.className = "container";
+        container.innerHTML = `<input class = "newcatinput" value = "New Category" />`
+        let input = document.createElement( "input" );
+        input.className = "changeweight"
+        input.type = 'number'
+        input.setAttribute( "value", `0` )
+        input.setAttribute("schoology-pro-ref", "n"+ newId)
+        input.setAttribute("period-num", periodNum );
+        input.setAttribute("course-num", courseNum );
+        container.appendChild( input );
+        container.innerHTML += "%";
+        period.element.querySelector( '.weightsgui .weights' ).appendChild( container );
+        updateWeights();
+        newId++;
+    }
 })
