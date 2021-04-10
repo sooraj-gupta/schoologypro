@@ -228,7 +228,6 @@ const processCourse = ( element ) =>
         })
         addCat( el, periodNum, catNum )
         course.periods[periodNum].categories = cats
-        course.periods[periodNum].addedCats = 0;
         return course;
     })( element.querySelector( '.gradebook-course-grades table tbody' ) )
 
@@ -337,25 +336,35 @@ const updateWeights = () => {
             let cat = document.querySelector( `[schoology-pro-id="${el.getAttribute('schoology-pro-ref')}"]`)
             cat.querySelector( ".percentage-contrib").innerHTML = `(${el.value}%)`
             var period = allCourses[el.getAttribute('course-num')].periods[el.getAttribute('period-num')];
+            period.addedCats = period.addedCats ? period.addedCats : 0;
             let cats = period.categories;
-            if( !el.getAttribute('schoology-pro-ref').includes("n") )
-                cats[cat.getAttribute('cat-num') + period.addedCats ].weightage = el.value;
-            cats[cat.getAttribute('cat-num') ].weightage = el.value;
+            console.log( el.getAttribute('schoology-pro-ref').includes("n") );
+
+            let addition = el.getAttribute('schoology-pro-ref').includes("n") ?  0 : period.addedCats
+
+            let idx = parseInt(cat.getAttribute('cat-num')) + parseInt(addition)
+
+            cats[ idx ].weightage = el.value;
             
 
             let totalWeight = 0;
             let weightedGrade = 0;
 
+
             for( c = 0; c < cats.length; c++ )
-                if( cats[c].weightage != -1 )
+            {
+                idx = parseInt(c) + parseInt(addition)
+                if( cats[idx].weightage != -1 )
                 {
-                    let dec = cats[c].weightage/100;
+                    let dec = cats[idx].weightage/100;
                     if( cats[c].maxPoints > 0 )
                     {
                         totalWeight += dec;
-                        weightedGrade += cats[c].percentage * dec;
+                        weightedGrade += cats[idx].percentage * dec;
+                        console.log( totalWeight + " " + weightedGrade );
                     }
                 }
+            }
             var perGrade = (() =>
             {
                 if( totalWeight > 0 )
@@ -376,7 +385,8 @@ document.querySelectorAll( ".addcategory").forEach( el => {
         let courseNum = el.getAttribute('course-num');
         let periodNum = el.getAttribute('period-num');
         var period = allCourses[courseNum].periods[periodNum];
-        period.addedCats++;
+        period.addedCats = period.addedCats ? period.addedCats + 1 : 1;
+        console.log( period.addedCats );
 
         period.element.insertAdjacentHTML( "afterend", `
         <tr tabindex="0"  class="report-row category-row has-children" schoology-pro-id="n${newId}" cat-num="${0}">
@@ -418,7 +428,7 @@ document.querySelectorAll( ".addcategory").forEach( el => {
             weighted = true;
         }
 
-        cats.push({
+        cats.unshift({
             name: getOuterText( cat.querySelector( '.title-column .title') ),
             el: cat,
             maxPoints: 0,
