@@ -9,7 +9,7 @@
 			"css" : ["soorajschromeextension.css"]
 		},
 		{
-			"matches": ["*://*.schoology.com/home*"],
+			"matches": ["*://*.schoology.com/*"],
 			"js": ["runhome.js"],
 			"css" : ["soorajschromeextension.css"]
 		}

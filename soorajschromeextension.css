@@ -19,7 +19,100 @@
     text-align: right;
 }
 
-#wrapper, #wrapper *, #wrapper #main-content-wrapper
+
+.strikethroughtext
 {
-    /* background-color: #111; */
+    text-decoration: line-through;
+}
+
+.translucent
+{
+    opacity: 0.4;
+}
+
+.soorajbutton
+{
+    background-color: #eeee;
+    border: none;
+    font-size: 12px;
+    padding: 2px 5px;
+}
+.soorajbutton:hover
+{
+    cursor: pointer;
+    background-color: #ddde;
+}
+
+
+.crossoverdue
+{
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.crossoverdue:hover
+{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.crossoverdue:active
+{
+    opacity: 0.3;
+}
+
+.weightsguicontainer
+{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -200px;
+    width: 200px;
+    text-align: left;
+    padding-left: 50px;
+    box-sizing: border-box;
+}
+.weightsgui
+{
+    padding: 30px 20px;
+    background-color: #e9e9e9;
+    width: 200px;
+    position: relative;
+}
+.weightsgui::after
+{
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 15px;
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent; 
+    
+    border-right:10px solid #e9e9e9; 
+}
+.weightsgui .container
+{
+    width: 100%;
+}
+.weightsgui .container input
+{
+    width: calc( 100% - 15px );
+    position: relative;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #c3c3c3;
+    background-color: transparent;
+    margin-bottom: 10px;
+    
+}
+
+.period-row:hover .weightsguicontainer, .weightsguicontainer:hover
+{
+    display: block;
 }

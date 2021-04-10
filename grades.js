@@ -4,18 +4,21 @@ document.querySelector( '#center-top' ).innerHTML +=
 <span>Current Semester: </span><input id = "thecurrentsem" type = "number" value = "${1}" min = "1" max = "3">
 `
 
+document.querySelector("#main-content-wrapper").style.width = "70%"
+
 allCoursesGrades = []
 letters = [
     { letter: "A", color: "#11dd00"},
     { letter: "B", color: "#aacc00"},
-    { letter: "C", color: "	#ffff00"}, 
-    { letter: "D", color: "	#ffc100"}, 
+    { letter: "C", color: "#ffff00"}, 
+    { letter: "D", color: "#ffc100"}, 
     { letter: "F", color: "#ff0000"}
 ];
 
 
 const getOuterText = el =>
 {
+    console.log( el );
     var child = el.firstChild, texts = [];
     while( child )
     {
@@ -48,10 +51,12 @@ const processCourse = ( element ) =>
             gradeCol.innerHTML = "";
             commentCol.classList.add( 'grade-column');
             course.periods.push( period );
+            per.querySelector('.comment-column').style.position = "relative";
         })
 
         var periodNum = 0;
         var currentCat = null
+        var currentPer = null
         var maxPoints = 0;
         var awardedPoints = 0;
         var firstPer = true;
@@ -71,6 +76,7 @@ const processCourse = ( element ) =>
                 if ( maxPoints != 0 )
                     percentage = awardedPoints/maxPoints
                 cats.push({
+                    name: getOuterText( currentCat.querySelector( '.title-column .title') ),
                     el: currentCat,
                     maxPoints: maxPoints,
                     awardedPoints: awardedPoints,
@@ -98,9 +104,11 @@ const processCourse = ( element ) =>
             currentCat = cat;
         }
 
-
+        id = 0;
         el.querySelectorAll( ".period-row, .category-row, .item-row" ).forEach( el =>
         {
+            el.setAttribute( "schoology-pro-id", id++ )
+            console.log( el );
             if( el.classList.contains( 'category-row' ) )
             {
                 addCat( el );
@@ -117,16 +125,26 @@ const processCourse = ( element ) =>
             }
             else if( el.classList.contains( 'period-row' ) )
             {
+
                 if( !firstPer )
                 {
                     addCat( el )
                     course.periods[periodNum].categories = cats.slice(0);
                     if( weighted )
                     {
+                        var weightsGUI = document.createElement( "div" );
+                        weightsGUI.className = "weightsguicontainer";
                         var totalWeight = 0;
                         var weightedGrade = 0;
                         for( var c = 0; c < cats.length; c++ )
                         {
+                            let container = document.createElement( "div");
+                            container.className = "container";
+                            container.innerHTML = `<span class = "name">${cats[c].name}</span>`
+                            let input = document.createElement( "input" );
+                            input.value = cats[c].weightage;
+                            
+                            
                             if( cats[c].weightage != -1 )
                             {
                                 let dec = cats[c].weightage/100;
@@ -137,6 +155,13 @@ const processCourse = ( element ) =>
                                 }
                             }
                         }
+                        weightsGUI.innerHTML += `
+                            <div class = "container">
+                                <button class = "soorajbutton" style = "background-color: #fff">Add Category</button>
+                            <div>`
+
+                        weightsGUI.innerHTML = "<div class = 'weightsgui'>" + weightsGUI.innerHTML + "</div>"
+                        currentPer.querySelector('.comment-column').appendChild( weightsGUI )
 
                         var perGrade = (() =>
                         {
@@ -169,18 +194,18 @@ const processCourse = ( element ) =>
                         course.periods[periodNum].element.querySelector( ".comment-column .td-content-wrapper" ).innerHTML = perGrade + "%"
                         courseGrades.push( perGrade );
                     }
-
                     currentCat = null;
                     cats = []
                     periodNum++;
                 }
+                currentPer = el;
                 firstPer = false;
             }
         })
         addCat( el )
         course.periods[periodNum].categories = cats
     })( element.querySelector( '.gradebook-course-grades table tbody' ) )
-
+    
     return { list: courseGrades, grade: getSemesterGrade( courseGrades, document.querySelector( "#thecurrentsem") ) };
 
 }
@@ -256,7 +281,7 @@ courseslist.forEach(
     ( element ) => {
         var course = processCourse( element )
         allCoursesGrades.push( course.list );
-        // console.log( "courses" );
+
     }
 )
 
