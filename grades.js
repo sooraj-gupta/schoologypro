@@ -338,7 +338,6 @@ const updateWeights = () => {
             var period = allCourses[el.getAttribute('course-num')].periods[el.getAttribute('period-num')];
             period.addedCats = period.addedCats ? period.addedCats : 0;
             let cats = period.categories;
-            console.log( el.getAttribute('schoology-pro-ref').includes("n") );
 
             let addition = el.getAttribute('schoology-pro-ref').includes("n") ?  0 : period.addedCats
 
@@ -353,15 +352,14 @@ const updateWeights = () => {
 
             for( c = 0; c < cats.length; c++ )
             {
-                idx = parseInt(c) + parseInt(addition)
-                if( cats[idx].weightage != -1 )
+                console.log( c );
+                if( cats[c].weightage != -1 )
                 {
-                    let dec = cats[idx].weightage/100;
+                    let dec = cats[c].weightage/100;
                     if( cats[c].maxPoints > 0 )
                     {
                         totalWeight += dec;
-                        weightedGrade += cats[idx].percentage * dec;
-                        console.log( totalWeight + " " + weightedGrade );
+                        weightedGrade += cats[c].percentage * dec;
                     }
                 }
             }

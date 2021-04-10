@@ -3,8 +3,214 @@
     <head>
         <meta charset="utf-8">
         <title>Test Popup</title>
+        <style>
+            @import url(https://fonts.googleapis.com/css?family=Barlow:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+            body{
+                padding: 40px;
+                font-family: 'Barlow';
+                width: 350px;
+            }
+            *
+            {
+                /* white-space: nowrap;; */
+                font-family: 'Barlow';
+            }
+            h1,h2,p
+            {
+                margin: 0;
+            }
+            button
+            {
+                background-color: #eeee;
+                border: none;
+                font-size: 15px;
+                padding: 5px 10px;
+                outline: none;
+                margin-right: 5px;
+                margin-bottom: 5px;
+
+            }
+            button:hover
+            {
+                cursor: pointer;
+                background-color: #ddde;
+            }
+            .text
+            {
+                font-size: 15px;
+            }
+            #subdomain
+            {
+                font-size: 15px;
+                outline: none;
+                border: none;
+                border-bottom: 1px solid dodgerblue;
+                width: 100px;
+                display: inline-block;
+            }
+            .hidden
+            {
+                display: none;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            input[type="checkbox"] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                -webkit-tap-highlight-color: transparent;
+                cursor: pointer;
+                margin: 0;
+            }
+            input[type="checkbox"]:focus {
+                outline: 0;
+            }
+            .cbx {
+                transform: scale( 0.65 );
+                position: absolute;
+                left: 250px;
+                top: -2px;
+                width: 24px;
+                height: 24px;
+                /* top: calc(50vh - 12px);
+                left: calc(50vw - 12px); */
+            }
+            .cbx input {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 24px;
+                height: 24px;
+                border: 2px solid #bfbfc0;
+                border-radius: 50%;
+            }
+            .cbx label {
+                width: 24px;
+                height: 24px;
+                background: none;
+                border-radius: 50%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                -webkit-filter: url("#goo");
+                filter: url("#goo");
+                transform: trasnlate3d(0, 0, 0);
+                pointer-events: none;
+            }
+            .cbx svg {
+                position: absolute;
+                top: 5px;
+                left: 4px;
+                z-index: 1;
+                pointer-events: none;
+            }
+            .cbx svg path {
+                stroke: #fff;
+                stroke-width: 3;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-dasharray: 19;
+                stroke-dashoffset: 19;
+                transition: stroke-dashoffset 0.3s ease;
+                transition-delay: 0.2s;
+            }
+            .cbx input:checked + label {
+                animation: splash 0.6s ease forwards;
+            }
+            .cbx input:checked + label + svg path {
+                stroke-dashoffset: 0;
+            }
+            @-moz-keyframes splash {
+                40% {
+                    background: #1e90ff;
+                    box-shadow: 0 -18px 0 -8px #1e90ff, 16px -8px 0 -8px #1e90ff, 16px 8px 0 -8px #1e90ff, 0 18px 0 -8px #1e90ff, -16px 8px 0 -8px #1e90ff, -16px -8px 0 -8px #1e90ff;
+                }
+                100% {
+                    background: #1e90ff;
+                    box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
+                }
+            }
+            @-webkit-keyframes splash {
+                40% {
+                    background: #1e90ff;
+                    box-shadow: 0 -18px 0 -8px #1e90ff, 16px -8px 0 -8px #1e90ff, 16px 8px 0 -8px #1e90ff, 0 18px 0 -8px #1e90ff, -16px 8px 0 -8px #1e90ff, -16px -8px 0 -8px #1e90ff;
+                }
+                100% {
+                    background: #1e90ff;
+                    box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
+                }
+            }
+            @-o-keyframes splash {
+                40% {
+                    background: #1e90ff;
+                    box-shadow: 0 -18px 0 -8px #1e90ff, 16px -8px 0 -8px #1e90ff, 16px 8px 0 -8px #1e90ff, 0 18px 0 -8px #1e90ff, -16px 8px 0 -8px #1e90ff, -16px -8px 0 -8px #1e90ff;
+                }
+                100% {
+                    background: #1e90ff;
+                    box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
+                }
+            }
+            @keyframes splash {
+                40% {
+                    background: #1e90ff;
+                    box-shadow: 0 -18px 0 -8px #1e90ff, 16px -8px 0 -8px #1e90ff, 16px 8px 0 -8px #1e90ff, 0 18px 0 -8px #1e90ff, -16px 8px 0 -8px #1e90ff, -16px -8px 0 -8px #1e90ff;
+                }
+                100% {
+                    background: #1e90ff;
+                    box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
+                }
+            }
+            span
+            {
+                position: relative;
+            }
+
+            .setting
+            {
+                padding-bottom: 5px;
+                display: block;
+            }
+        </style>
     </head>
     <body>
-        <button>This Is A Button</button>
+        <h1>Schoology <span style = "color: dodgerblue">Pro </span> <img class = "dababy hidden" style = "width: 30px" src = "https://media.pitchfork.com/photos/5c7d4c1b4101df3df85c41e5/1:1/w_600/Dababy_BabyOnBaby.jpg"></h1>
+        <p>By: Sooraj Gupta</p>
+        <br>
+        <br>
+        <h2 class = "text">Your Schoology Sub-Domain </h2><br>
+        <div id = "subdomain" placeholder="subdomain" contenteditable="true">subdomain</div><span class = 'text'>.schoology.com</span>
+        <br>
+        <br><br>
+        <h2 class = "text">Schoology Quick Links </h2><br>
+        <button class = "canbehidden hidden" id = "home">Home</button>
+        <button class = "canbehidden hidden" id = "grades">Grades</button>
+        <button class = "" id = "grades">Schoology Pro</button>
+        <button class = "dababy hidden" id = "lessgo">LESS GO</button>
+        <br><br><br>
+        <h2 class = "text">Schoology Pro Settings</h2><br>
+        <span class = "text setting">
+            Display Grades
+            <div class="cbx">
+                <input id="displaygrades" class = 'check' type="checkbox" />
+                <label for="cbx"></label>
+                <svg width="15" height="14" viewbox="0 0 15 14" fill="none">
+                    <path d="M2 8.36364L6.23077 12L13 2"></path>
+                </svg>
+            </div>
+        </span>
+        <span class = "text setting">
+            DaBaby Themed
+            <div class="cbx">
+                <input id="dababy" class = 'check' type="checkbox" />
+                <label for="cbx"></label>
+                <svg width="15" height="14" viewbox="0 0 15 14" fill="none">
+                    <path d="M2 8.36364L6.23077 12L13 2"></path>
+                </svg>
+            </div>
+        </span>
+
+
+        <script type = "text/javascript" src = "popup.js"></script>
     </body>
 </html>
