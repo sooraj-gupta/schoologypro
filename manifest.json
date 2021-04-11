@@ -1,5 +1,5 @@
 {
-	"name": "Test Extension",
+	"name": "Schoology Pro",
 	"version": "1.0",
 	"manifest_version": 2,
 	"content_scripts":[
@@ -23,6 +23,12 @@
 		"storage",
 		"*://*.schoology.com/*"
   	],
+
+	"icons": { 
+		"16": "imgs/logo16.png",
+		"48": "imgs/logo48.png",
+		"128": "imgs/logo128.png" 
+	},
 	"browser_action": {
 		"default_popup": "popup.html",
 		"default_title": "Test"

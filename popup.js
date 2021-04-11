@@ -111,11 +111,13 @@ $$('.check').forEach( el => {
         else
         {
             settings[el.id].checked = !settings[el.id].checked ;
-            $$('.dababy' ).forEach( el => el.classList.add("hidden") );
         }
-        if(settings[el.id].checked && el.id === "dababy" )
+        if(el.id === "dababy" )
         {
-            $$('.dababy' ).forEach( el => el.classList.remove("hidden") );
+            if ( settings[el.id].checked )
+                $$('.dababy' ).forEach( el => el.classList.remove("hidden") );
+            else 
+                $$('.dababy' ).forEach( el => el.classList.add("hidden") );
         }
         setSettings();
     }
