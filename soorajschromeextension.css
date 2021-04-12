@@ -44,6 +44,123 @@
 }
 
 
+.setting input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    margin: 0;
+}
+.setting input[type="checkbox"]:focus {
+    outline: 0;
+}
+.setting .cbx *
+{
+    box-sizing: border-box;
+}
+.setting .cbx {
+    --offsetY: -18px;
+    box-sizing: border-box;
+    transform: scale( 0.6 );
+    position: relative;
+    display: inline-block;    
+    width: 24px;
+    height: 0px;
+    margin-top: -24px
+    /* top: calc(50vh - 12px);
+    left: calc(50vw - 12px); */
+}
+.setting .cbx input {
+    position: absolute;
+    top: var(--offsetY);
+    left: 0;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #bfbfc0;
+    border-radius: 50%;
+}
+.setting .cbx label {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border-radius: 50%;
+    position: absolute;
+    top: var(--offsetY);
+    left: 0;
+    -webkit-filter: url("#goo");
+    filter: url("#goo");
+    transform: translate3d(0, 0, 0);
+    pointer-events: none;
+}
+.setting .cbx svg {
+    position: absolute;
+    top: calc( var(--offsetY) + 5px );
+    left: 4px;
+    z-index: 1;
+    pointer-events: none;
+}
+.cbx svg path {
+    stroke: #fff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 19;
+    stroke-dashoffset: 19;
+    transition: stroke-dashoffset 0.3s ease;
+    transition-delay: 0.2s;
+}
+.setting .cbx input:checked + label {
+    animation: splash 0.6s ease forwards;
+}
+.setting .cbx input:checked + label + svg path {
+    stroke-dashoffset: 0;
+}
+@-webkit-keyframes splash {
+    40% {
+        background: #1e90ff;
+        box-shadow: 0 -18px 0 -8px #1e90ff, 16px -8px 0 -8px #1e90ff, 16px 8px 0 -8px #1e90ff, 0 18px 0 -8px #1e90ff, -16px 8px 0 -8px #1e90ff, -16px -8px 0 -8px #1e90ff;
+    }
+    100% {
+        background: #1e90ff;
+        box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
+    }
+}
+@keyframes splash {
+    40% {
+        background: #1e90ff;
+        box-shadow: 0 -18px 0 -8px #1e90ff, 16px -8px 0 -8px #1e90ff, 16px 8px 0 -8px #1e90ff, 0 18px 0 -8px #1e90ff, -16px 8px 0 -8px #1e90ff, -16px -8px 0 -8px #1e90ff;
+    }
+    100% {
+        background: #1e90ff;
+        box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
+    }
+}
+.setting
+{
+    font-size: 12px;
+    position: relative;
+    display: block;
+    margin-top: 5px;;
+}
+
+input.schoology-pro
+{
+    font-size: 12px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid dodgerblue;
+    width: 100px;
+    display: inline-block;
+}
+
+#thecurrentsem
+{
+    width: 25px;
+    text-align: center;
+    padding-left: 12px;
+}
+
 .crossoverdue
 {
     padding: 0;
@@ -70,18 +187,18 @@
     display: none;
     position: absolute;
     top: 0;
-    right: -200px;
-    width: 200px;
+    right: -140px;
+    width: 140px;
     text-align: left;
-    padding-left: 50px;
+    padding-left: 15px;
     box-sizing: border-box;
 }
 .weightsgui
 {
-    border-radius: 5px;
-    padding: 30px 20px;
-    background-color: #e9e9e9;
-    width: 200px;
+    border-radius: 2px;
+    padding: 10px 10px;
+    background-color: #ebebeb;
+    width: 100%;
     position: relative;
 }
 .weightsgui::after
@@ -94,12 +211,16 @@
     height: 0; 
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent; 
-    
-    border-right:10px solid #e9e9e9; 
+    border-right:10px solid #ebebeb; 
 }
 .weightsgui .container
 {
     width: 100%;    
+}
+.weightsgui span
+{
+    width: 100%;    
+    display: block;
 }
 .weightsgui .container input
 {
@@ -124,4 +245,156 @@
 .period-row:hover .weightsguicontainer, .weightsguicontainer:hover
 {
     display: block;
+}
+
+
+
+.period-row[schoology-pro-id] .td-content-wrapper, 
+.hierarchical-grading-report.show-title, 
+.final-row[schoology-pro-id] .td-content-wrapper, 
+.item-row[schoology-pro-id] .td-content-wrapper, 
+.report-row[schoology-pro-id] .td-content-wrapper,
+.category-row[schoology-pro-id] .td-content-wrapper
+{
+    transition: 0.2s;
+}
+
+.compactgrades .gradebook-course.hierarchical-grading-report .period-row[schoology-pro-id] .td-content-wrapper, 
+.compactgrades .gradebook-course.hierarchical-grading-report .final-row[schoology-pro-id] .td-content-wrapper, 
+.compactgrades .gradebook-course.hierarchical-grading-report .item-row[schoology-pro-id] .td-content-wrapper,
+.compactgrades .gradebook-course.hierarchical-grading-report .report-row[schoology-pro-id] .td-content-wrapper,
+.compactgrades .gradebook-course.hierarchical-grading-report .category-row[schoology-pro-id] .td-content-wrapper
+{
+    padding: 5px 0px !important;
+    border-top: 1px solid #ddd;
+}
+
+.compactgrades .gradebook-course.hierarchical-grading-report .title-column .expandable-icon-grading-report.schoology-pro {
+    position: absolute;
+    clip: rect(35px, 15px, 50px, 0);
+    top: -25px ;
+    left: -20px;
+}
+
+.compactgrades .hierarchical-grading-report.show-title.schoology-pro {
+    padding: 0px 0;
+}
+
+.compactgrades .gradebook-course.hierarchical-grading-report .childrenCollapsed .title-column .expandable-icon-grading-report.expandable-icon-grading-report.schoology-pro {
+    position: absolute;
+    clip: rect(0, 15px, 15px, 0);
+    top: 7px;
+    left: -20px;
+}
+
+.compactgrades .gradebook-course.hierarchical-grading-report .title-column:hover .expandable-icon-grading-report.schoology-pro {
+    position: absolute;
+    clip: rect(46px, 60px, 80px, 0);
+    top: -41px;
+    left: -20px;
+}
+
+.compactgrades .gradebook-course-grades.schoology-pro {
+    padding: 0px;
+}
+
+.compactgrades .weightsgui::after
+{
+    top: 4px;
+}
+
+.courseoptionsbutton:hover
+{
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.courseoptions
+{
+    display: none;
+    box-sizing: border-box;
+    position: absolute;
+    right: -130px;
+    top: 50%;
+    transform: translateY( -50% );
+    padding: 10px;
+}
+
+.courseoptions.show
+{
+    display: block;
+}
+
+.courseoption
+{
+    padding: 10px;
+    width: 120px;
+    background-color: #e3e3e3;
+}
+
+.courseoption:hover
+{
+    cursor: pointer;
+    background-color: #c3c3c3;
+}
+
+.pro-notif-container
+{
+    transition: 0.2s;;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 370px;
+    min-height: 0px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+}
+
+.pro-notif
+{
+    transition: 0.5s;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #cae1feee;
+    padding: 15px 15px;
+    width: 370px;
+    min-height: 90px;
+    border-radius: 5px;
+    margin-left: 0px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.pro-notif .pro-icon
+{
+    width: 50px;
+    height: 50px;
+    padding-right: 20px;
+    padding-bottom: 0px;
+}
+
+.pro-notif .pro-closenotif
+{
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+.pro-notif .pro-closenotif:hover
+{
+    transform: scale(1.15);
+    cursor: pointer;
+}
+
+.pro-notif .pro-title
+{
+    font-weight:bolder;
+    display: block;
+    font-size: 14px;
 }

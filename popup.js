@@ -1,8 +1,6 @@
 let settings = JSON.parse( window.localStorage.getItem( "pro-settings" ) );
 if( !settings ) 
-    settings = {
-
-    };
+    settings = {};
 
 const setSettings = () =>
 {

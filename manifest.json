@@ -1,6 +1,6 @@
 {
 	"name": "Schoology Pro",
-	"version": "1.0",
+	"version": "1.0.0",
 	"manifest_version": 2,
 	"content_scripts":[
 		{
@@ -9,7 +9,7 @@
 			"css" : ["soorajschromeextension.css"]
 		},
 		{
-			"matches": ["*://*.schoology.com/*"],
+			"matches": ["*://*.schoology.com/home*"],
 			"js": ["runhome.js"],
 			"css" : ["soorajschromeextension.css"]
 		}
