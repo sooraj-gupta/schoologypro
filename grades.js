@@ -12,7 +12,7 @@ const pushNotif = ( title, message, timeout ) =>
         <div class = "pro-icon-container">
             <img src = "https://i.imgur.com/XrB6ETj.png" class = "pro-icon">
         </div>
-        <div>
+        <div style = "width: 100%">
             <span class = 'pro-title'>${title}</span>
             <span class = 'pro-message'>${message}</span>
         </div>
