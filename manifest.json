@@ -1,5 +1,6 @@
 {
 	"name": "Schoology Pro",
+	"description": "Meant to enhance the user experience of the educational platform Schoology",
 	"version": "1.0.0",
 	"manifest_version": 2,
 	"content_scripts":[
@@ -9,8 +10,13 @@
 			"css" : ["soorajschromeextension.css"]
 		},
 		{
-			"matches": ["*://*.schoology.com/home*"],
+			"matches": ["*://*.schoology.com/home*", "*://*.schoology.com/course/*" ],
 			"js": ["runhome.js"],
+			"css" : ["soorajschromeextension.css"]
+		},
+		{
+			"matches": ["*://*.schoology.com/assignment/*" ],
+			"js": ["runassignments.js"],
 			"css" : ["soorajschromeextension.css"]
 		}
 	],
@@ -18,8 +24,7 @@
 		"matches": ["*://*.schoology.com/*"],
 		"scripts" : ["background.js"]
 	},
-	"permissions": [
-    	"tabs",
+	"permissions": [		
 		"storage",
 		"*://*.schoology.com/*"
   	],

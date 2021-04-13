@@ -398,3 +398,34 @@ input.schoology-pro
     display: block;
     font-size: 14px;
 }
+
+.pro-upc-option
+{
+    white-space: pre-wrap;
+    background-color: #e0e0e0;
+    padding: 10px;
+    width: 100%;
+}
+
+#pro-upc-options-div
+{
+    display: flex;
+}
+#pro-upc-options-div.hidden
+{
+    display: none;
+}
+
+#pro-upc-options-div::after
+{
+    position: absolute;
+    content: "";
+    bottom: -10px;
+    right: -2px;
+    transform: translateX(50%);
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent; 
+    border-top:10px solid #e0e0e0; 
+}

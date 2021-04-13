@@ -12,7 +12,13 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
             file: 'home.js'
         }, () => {
             // console.log( "injected" );
-        } );
-        
+        } );  
+    }
+    else if( request.message === 'injectassignmentsjs' ){
+        chrome.tabs.executeScript( null, {
+            file: 'assignments.js'
+        }, () => {
+            // console.log( "injected" );
+        } );  
     }
 } )

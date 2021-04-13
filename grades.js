@@ -69,6 +69,16 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
         </div>
         Color-code Grades 
     </span>
+    <span class = "setting">
+        <div class="cbx">
+            <input id="colorcode" class = 'check' type="checkbox" />
+            <label for="cbx"></label>
+            <svg width="15" height="14" viewbox="0 0 15 14" fill="none">
+                <path d="M2 8.36364L6.23077 12L13 2"></path>
+            </svg>
+        </div>
+        Color-code Grades
+    </span>
     `
 
 
@@ -427,7 +437,7 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
 
             var options = [
                 {
-                    name: "Remove Course",
+                    name: "Hide Course",
                     click: function( courseNum )
                     {
                         document.querySelector( `[courseID="${courseNum}"]`).classList.add( "hidden")

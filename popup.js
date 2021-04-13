@@ -67,21 +67,19 @@ $( '#subdomain' ).addEventListener( "paste" ,(evt) => {
 $("#home").onclick = function()
 {
     if( subdomain )
-        chrome.tabs.create({'url': `https://${subdomain.trim()}.schoology.com`}, function(tab) {});
+        window.open( `https://${subdomain.trim()}.schoology.com/home`)
     else
-        chrome.tabs.create({'url': `https://schoology.com`}, function(tab) {});
+        window.open(`https://schoology.com`)
 }
 
 $("#grades").onclick = function()
 {
     if( subdomain )
-        chrome.tabs.create({'url': `https://${subdomain.trim()}.schoology.com/grades/grades`}, function(tab) {});
-    else
-        chrome.tabs.create({'url': `https://schoology.com`}, function(tab) {});
+        window.open( `https://${subdomain.trim()}.schoology.com/grades/grades` );
 }
 $("#lessgo").onclick = function()
 {
-    chrome.tabs.create({'url': `https://www.youtube.com/watch?v=KvuQNNVrbtM`}, function(tab) {});
+    window.open(`https://www.youtube.com/watch?v=KvuQNNVrbtM` );
   
 }
 
