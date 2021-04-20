@@ -405,6 +405,12 @@ input.schoology-pro
     background-color: #e0e0e0;
     padding: 10px;
     width: 100%;
+    transition: 0.2s;
+    color: #111;
+}
+.pro-upc-option:hover
+{
+    background-color: #d4d4d4;
 }
 
 #pro-upc-options-div
@@ -428,4 +434,81 @@ input.schoology-pro
     border-left: 10px solid transparent;
     border-right: 10px solid transparent; 
     border-top:10px solid #e0e0e0; 
+}
+
+#pro-upcoming-settings
+{
+    transition: 0.2s;
+}
+
+#pro-upcoming-settings:hover
+{
+    cursor: pointer;
+    color: #888
+}
+
+.pro-item-title.clickable:hover .sExtlink-processed
+{
+    text-decoration: none;
+}
+
+
+.pro-order-popup
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 80vw;
+    height: 80vh;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 40px;
+}
+
+.pro-order-popup-course
+{
+    display: flex;;
+    align-items: center;
+    padding: 20px 15px;
+    border-top: 1px dotted #aaa;
+}
+
+.pro-order-popup-course .pro-arrows
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.pro-order-popup-course .up-arrow
+{
+    width: 0px; 
+    height:0px; 
+    border-left: 10px solid #0000; 
+    border-right: 10px solid #0000; 
+    border-bottom: 10px solid #000;  
+    margin: 2px 0px;
+}
+
+.pro-order-popup-course .up-arrow:hover
+{
+    cursor: pointer;
+    border-bottom: 10px solid #444;  
+}
+.pro-order-popup-course .down-arrow
+{
+    margin: 2px 0px;
+    width: 0px; 
+    height:0px; 
+    border-left: 10px solid #0000; 
+    border-right: 10px solid #0000; 
+    border-top: 10px solid #000;  
+}
+
+.pro-order-popup-course .down-arrow:hover
+{
+    cursor: pointer;
+    border-top: 10px solid #444;  
 }

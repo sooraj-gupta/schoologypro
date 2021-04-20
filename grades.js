@@ -2,6 +2,19 @@ var notifContainer = document.createElement( "div" );
 notifContainer.className = "pro-notif-container";
 document.body.appendChild( notifContainer );
 
+const preventEnter = ( e ) =>
+{
+    console.log( e.keyCode );
+    if( e.keyCode === 13 )
+        e.preventDefault();   
+}
+
+const preventNonNumbers = ( e ) => 
+{
+    if( ( e.keyCode < 48 || e.keyCode > 57 ) && e.keyCode !== 8 && e.keyCode !== 39 && e.keyCode !== 37  )
+        e.preventDefault();
+}
+
 const pushNotif = ( title, message, timeout ) =>
 {
     const notifHeight = 100;
@@ -69,18 +82,9 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
         </div>
         Color-code Grades 
     </span>
-    <span class = "setting">
-        <div class="cbx">
-            <input id="colorcode" class = 'check' type="checkbox" />
-            <label for="cbx"></label>
-            <svg width="15" height="14" viewbox="0 0 15 14" fill="none">
-                <path d="M2 8.36364L6.23077 12L13 2"></path>
-            </svg>
-        </div>
-        Color-code Grades
-    </span>
     `
 
+    
 
     var revealAll = document.createElement( 'button' );
     revealAll.className = "soorajbutton";
@@ -96,6 +100,7 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
     }
     document.querySelector( '#center-top' ).appendChild( revealAll );
 
+    
     document.body.onclick = function()
     {
         document.querySelectorAll( ".courseoptions.show" ).forEach( el => el.classList.remove("show" ) );
@@ -127,6 +132,19 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
         }
         return texts.join("");
     }
+    const getNonOuterText = el =>
+    {
+        var child = el.firstChild, texts = [];
+        while( child )
+        {
+            if( child.nodeType != 3 )
+            {
+                return child;
+            }
+            child = child.nextSibling
+        }
+        // return texts.join("");
+    }
 
     document.querySelector( "#compact" ).onchange = function()
     {
@@ -143,6 +161,7 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
         return (( el ) => {
             cats = [];
             var course = {
+                name: courseName,
                 periods:[],
             };
 
@@ -217,11 +236,118 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
             el.querySelectorAll( ".period-row, .category-row, .item-row" ).forEach( el =>
             {
                 course.periods[periodNum].grades = []
-                el.setAttribute( "schoology-pro-id", id++ )
+                el.setAttribute( "schoology-pro-id", id )
                 if( el.classList.contains( 'category-row' ) )
                 {
                     addCat( el, periodNum, catNum );
                     catNum++;
+                    let addItemRow = document.createElement( "tr" );
+                    addItemRow.className = "report-row item-row pro-item-row"
+                    addItemRow.setAttribute( "schoology-pro-id", "" );
+                    addItemRow.setAttribute( "schoology-pro-ref", `${id}` );
+                    addItemRow.innerHTML = `
+                    <th scope="row" class="title-column clickable">
+                        <div class = "reportSpacer-3">
+                            <div class="td-content-wrapper">
+                                <span class="title">
+                                    <a class="sExtlink-processed pro-item">
+                                        + Add Item
+                                        <span class="visually-hidden">
+                                            assignment
+                                        </span>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                    <td class="grade-column">
+                            <div class="td-content-wrapper">
+                            </div> 
+                    </td>
+                    <td class="comment-column">
+                            <div class="td-content-wrapper">
+                            </div>
+                    </td>
+                    `;
+                    el.parentNode.insertBefore( addItemRow, el.nextSibling )
+                    addItemRow.querySelector( ".pro-item" ).parentElement.parentElement.onclick = function()
+                    {
+                        console.log( allCourses ); 
+                        let newItemRow = document.createElement( "tr" );
+                        newItemRow.className = "report-row item-row pro-item-row"
+                        newItemRow.setAttribute( "schoology-pro-id", "" );
+                        newItemRow.setAttribute( "schoology-pro-ref", `${id}` );
+                        newItemRow.innerHTML = `
+                        <th scope="row" class="title-column pro-item-title-container">
+                            <div class = "reportSpacer-3">
+                                <div class="td-content-wrapper">
+                                    <span class="title">
+                                        <a class="sExtlink-processed pro-item-title" contenteditable style = "outline:none; border-bottom: 1px solid dodgerblue; padding: 0px 4px; text-decoration: none ">
+                                            New Assignment
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <td class="grade-column">
+                            <div class="td-content-wrapper">
+                                <span class="awarded-grade">
+                                    <span class="numeric-grade-value">
+                                        <span class="rounded-grade" contenteditable style = "border-bottom: 1px solid dodgerblue; padding: 0px 4px;" >0</span>
+                                    </span>
+                                </span>
+                                <span class="max-grade"> 
+                                     / <span class = "pro-max-grade" style = "border-bottom: 1px solid dodgerblue; padding: 0px 4px;" contenteditable>0</span>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="comment-column">
+                            <div class="td-content-wrapper">
+                                <span class = "pro-removethis" style = "float:right">
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                        fill-rule="evenodd"
+                                        clip-rule="evenodd"
+                                        d="M17 5V4C17 2.89543 16.1046 2 15 2H9C7.89543 2 7 2.89543 7 4V5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H5V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H17ZM15 4H9V5H15V4ZM17 7H7V18C7 18.5523 7.44772 19 8 19H16C16.5523 19 17 18.5523 17 18V7Z"
+                                        fill="currentColor"
+                                        />
+                                        <path d="M9 9H11V17H9V9Z" fill="currentColor" />
+                                        <path d="M13 9H15V17H13V9Z" fill="currentColor" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </td>
+                        `;
+                        addItemRow.parentNode.insertBefore( newItemRow, addItemRow.nextSibling )
+
+                        newItemRow.querySelector( ".rounded-grade" ).onkeydown = ( e ) => { preventEnter(e); preventNonNumbers(e); } 
+                        newItemRow.querySelector( ".pro-max-grade" ).onkeydown = ( e ) => { preventEnter(e); preventNonNumbers(e); } 
+
+                        newItemRow.querySelector( ".rounded-grade" ).oninput = () => 
+                        {
+                            console.log( courseNum );
+                        }
+
+                        newItemRow.querySelector( ".pro-item-title" ).onkeydown = ( e ) => { preventEnter(e); } 
+
+                        newItemRow.querySelector( ".pro-removethis" ).onclick = ( el ) => { newItemRow.remove() };
+                    }
+
+                    if( el.classList.contains( "childrenCollapsed" ) || !el.classList.contains( "has-children" ) )
+                        addItemRow.classList.add( "hidden" )
+                    el.onclick = () => {
+                        if( el.classList.contains( "childrenCollapsed" ) )
+                            addItemRow.classList.add( "hidden" )
+                        else
+                            addItemRow.classList.remove( "hidden" )
+                    }
+                    
                 }
                 else if( el.classList.contains( 'item-row' ) )
                 {
@@ -230,7 +356,16 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
                     if( max != null && awarded != null )
                     {
                         maxPoints += parseFloat(max.innerText.replace(/[^0-9\.]+/g,""));
-                        awardedPoints += parseFloat(awarded.innerText.replace(/[^0-9\.]+/g,""))
+                        max.innerHTML += `<span class = "pro-max-grade" style = "border-bottom: 1px solid dodgerblue; padding: 0px 4px;" contenteditable>${max.innerText.slice( 2 ).trim()}</span>`;
+                        let innerEl = getNonOuterText( max );
+                        max.innerHTML = " /";
+                        max.appendChild( innerEl ); 
+                        let score = parseFloat(awarded.innerText.replace(/[^0-9\.]+/g,""));
+                        awardedPoints += score
+                        awarded.innerHTML = `<span class = "rounded-grade" style = "border-bottom: 1px solid dodgerblue; padding: 0px 4px;" contenteditable>${score}</span>`;
+
+                        awarded.querySelector( ".rounded-grade" ).onkeydown = ( e ) => { preventEnter(e); preventNonNumbers(e); } 
+                        max.querySelector( ".pro-max-grade" ).onkeydown = ( e ) => { preventEnter(e); preventNonNumbers(e); } 
                     }
                 }
                 else if( el.classList.contains( 'period-row' ) )
@@ -332,6 +467,7 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
                     currentPer = el;
                     firstPer = false;
                 }
+                id++
             })
             addCat( el, periodNum, catNum )
             course.periods[periodNum].categories = cats
@@ -425,8 +561,7 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
 
     var courseslist = document.querySelectorAll( ".gradebook-course" );
     let deletedcourses = [];
-
-    courseslist.forEach(
+     courseslist.forEach(
         ( element ) => {
 
             element.style.position  = "relative";
@@ -476,16 +611,42 @@ if( !document.querySelector( ".footer-text-enhanced-by" ) )
 
 
             var course = processCourse( element )
-            let grades = []
-            for( var c = 0; c < course.periods.length; c++ )
-            {
-                grades.push( course.periods[c].grade );
-            }
             allCourses.push( course );
             console.log( courseNum )
             courseNum++;
         }
     )
+
+    let orderPopup = document.createElement( "div" );
+    orderPopup.className = "pro-order-popup"
+    for( let i = 0; i < allCourses.length; i++ )
+    {
+        let c = document.createElement( "div" );
+        c.className = 'pro-order-popup-course';
+        c.innerHTML = 
+        `
+        <div class = 'pro-arrows'>
+            <span class = "up-arrow"></span>
+            <span class = "down-arrow"></span>
+        </div>
+        <div class = 'pro-course-name'>${allCourses[i].name}</div>
+        `;
+        orderPopup.appendChild( c );
+    }
+    document.body.appendChild( orderPopup );
+    var changeOrder = document.createElement( 'button' );
+    changeOrder.className = "soorajbutton";
+    changeOrder.innerHTML = "Change Course Order";
+    changeOrder.style.position = "absolute";
+    changeOrder.style.bottom = "10px";
+    changeOrder.style.right = "75px";
+    changeOrder.onclick = function()
+    {
+        
+    }
+    document.querySelector( '#center-top' ).appendChild( changeOrder );
+    
+
     courseNum = 0;
     chrome.storage.sync.get( ['compact'], r=>{
         if( r.compact )

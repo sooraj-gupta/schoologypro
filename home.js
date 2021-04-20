@@ -18,6 +18,10 @@ function partial(func /*, 0..n args */) {
         return func.apply(this, allArguments);
     };
 }
+function runIfExists( el, fn )
+{
+    if( el ) fn( el );
+}
 
 
 
@@ -207,7 +211,7 @@ document.body.onload = function()
                 }
             })
 
-
+            let lastUpc = null
             document.querySelectorAll( ".upcoming-events .upcoming-list .upcoming-event, #course-events .upcoming-list .upcoming-event" ).forEach( el =>{
                 // console.log( el )
                 var href = el.querySelector( ".infotip a");
@@ -217,23 +221,39 @@ document.body.onload = function()
                     el.querySelector( ".infotip").style.position = "relative";
                     var check = document.createElement( "input" );
                     check.className = "pro-upcoming-checkbox"
+
+                    var check = document.createElement( "span" );
+                    check.className = "pro-upcoming-checkbox setting"
+                    check.innerHTML = `
+                    <div class="cbx">
+                        <input class = "check" type="checkbox" />
+                        <label for="cbx"></label>
+                        <svg width="15" height="14" viewbox="0 0 15 14" fill="none">
+                            <path d="M2 8.36364L6.23077 12L13 2"></path>
+                        </svg>
+                    </div>`
+                    el.querySelector( ".infotip").appendChild( check );
+
+                    let checkBox = check.querySelector(".check");
+
                     check.type = "checkbox";
                     check.style.position = "absolute";
                     check.style.top = "0"
                     check.style.right= "0"
-                    check.checked = checkAssignment( el, href, id, false );
+                    checkBox.checked = checkAssignment( el, href, id, false );
 
-                    check.onchange = function()
+
+                    checkBox.onchange = function()
                     {
                         checkAssignment( el, href, id, true );
-                        if( check.checked )
+                        if( checkBox.checked )
                         {
                             let motive = completedOneMotivationalMessages[Math.floor( Math.random() * completedOneMotivationalMessages.length )]
                             pushNotif( motive.title, motive.message.pre + "\"" + el.querySelector( "a").innerText+ "\"" + motive.message.post, 4000 );
                         }
                         let allChecked = true;
                         document.querySelectorAll( ".pro-upcoming-checkbox" ).forEach( el => {
-                            if( !el.checked )
+                            if( !el.querySelector( ".check").checked )
                                 allChecked = false;
                         })
                         if( allChecked )
@@ -242,37 +262,47 @@ document.body.onload = function()
                             pushNotif( motive.title, motive.message, 6000 );
                         }
                     }
-                    el.querySelector( ".infotip").appendChild( check );
                 }
                 else if( href.href.includes( "event" ) ) {
                     el.classList.add( "hideableevent" );
                 }
+                lastUpc = el;
             });
             let upcSettings = document.createElement( "span" );
             upcSettings.id = "pro-upcoming-settings";
             upcSettings.innerHTML = "&#x2699;"
-            upcSettings.style.cssText += ";position: relative;float:right; font-size: 25px; transform: translateY( -10px ); display: inline-block"
+            upcSettings.style.cssText += ";position: relative;float:right; font-size: 25px; transform: translateY( -10px ); display: inline-block; transition: 0.2s;"
             var upcOptions = [
                 {
                     title: "Hide Events",
                     titleSecondary: "Show Events",
-                    bools: [ true ],
+                    bools: [ storage.getItem( "eventshidden" ) === "true" ],
                     onClick: ( bools, thisEl, primary, secondary ) => {
                         document.querySelectorAll( ".hideableevent" ).forEach( el => {
-                            el.classList.toggle( "hidden" );
-                            ( el.previousElementSibling.classList.contains( "date-header" ) 
-                              && 
-                              el.previousElementSibling.classList.toggle( "hidden" ) )
+                            let prev = el.previousElementSibling;
+                            let next = el.nextElementSibling;
                             if( bools[0] )
                             {
+                                el.classList.add( "hidden" );
+                                if( prev.classList.contains( "date-header" ) && ( ( next && next.classList.contains("date-header") ) || next == lastUpc ) )
+                                    prev.classList.add( "hidden" ) 
                                 thisEl.innerHTML = secondary;
+                                storage.setItem( "eventshidden", "true" );
                             }
                             else
                             {
+                                el.classList.remove( "hidden" );
+                                if( prev.classList.contains( "date-header" ) && ( ( next && next.classList.contains("date-header") ) || next == lastUpc ) )
+                                    prev.classList.remove( "hidden" ) 
                                 thisEl.innerHTML = primary;
+                                storage.setItem( "eventshidden", "false" );
                             }
-                            bools[0] = !bools[0];
                         } );
+                        bools[0] = !bools[0];
+                    },
+                    onLoad: ( bools, thisEl, primary, secondary, onClick ) =>
+                    {   
+                        onClick( bools, thisEl, primary, secondary  )
                     }
                 }
             ]
@@ -290,10 +320,11 @@ document.body.onload = function()
                 if( upcOptions[i].bools )
                 {
                     upcOption.onclick = partial( upcOptions[i].onClick, upcOptions[i].bools, upcOption, upcOptions[i].title, upcOptions[i].titleSecondary );
+                    upcOption.onclick();
                 }
                 else
                 {
-                    // upcOption.onclick =  upcOptions[i].onClick;
+                    upcOption.onclick =  upcOptions[i].onClick;
                 }
                 upcOptionsDiv.appendChild( upcOption );
             }
@@ -307,12 +338,16 @@ document.body.onload = function()
 
             // document.querySelector( ".upcoming-events .h3-med").style.height = "40px"
             document.querySelector( ".upcoming-events .h3-med a").classList.add( "hidden")
-
         }
         else
         {
             pushNotif( "Extension Conflict", "Please disable or remove any other Schoology related Chrome Extension to continue using Schoology Pro!", 6000 );
         }
     }
+    const changeStyling = () => {
+        runIfExists( document.querySelector( ".upcoming-events" ), (el) => el.style.borderRadius = "10px" );
+        runIfExists( document.querySelector( ".overdue-submissions" ), el => el.style.borderRadius = "10px" );
+    }
     init();
+    changeStyling();
 }
